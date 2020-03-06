@@ -3,16 +3,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 /**
- * Screen for listing plans
+ * Screen for creating plans
  */
-export default function PlanListScreen() {
+export default function CreatePlanScreen() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
 
         <View style={styles.getStartedContainer}>
 
-          <Text style={styles.getStartedText}>TODO: List of existing plans</Text>
+          <Text style={styles.getStartedText}>TODO: Create plan screen</Text>
 
         </View>
 
