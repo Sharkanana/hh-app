@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 /**
@@ -16,9 +16,15 @@ export default function ProfileScreen() {
 
         </View>
 
+        <Button title="Logout" onPress={logout}/>
+
       </ScrollView>
     </View>
   );
+
+  function logout() {
+    //todo
+  }
 }
 
 const styles = StyleSheet.create({

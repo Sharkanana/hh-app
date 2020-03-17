@@ -8,11 +8,13 @@ export default function(containerRef) {
       Root: {
         path: 'root',
         screens: {
-          Home: 'home',
-          Links: 'links',
-          Settings: 'settings',
+          CreatePlan: 'createPlan',
+          PlanList: 'myPlans',
+          Profile: 'profile',
+          Login: 'login',
+          Register: 'register'
         },
-      },
+      }
     },
   });
 }

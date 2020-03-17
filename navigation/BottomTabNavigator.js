@@ -6,7 +6,7 @@ import CreatePlanScreen from "../screens/CreatePlanScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Home';
+const INITIAL_ROUTE_NAME = 'PlanList';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -49,7 +49,7 @@ function getHeaderTitle(route) {
 
   switch (routeName) {
     case 'PlanList':
-      return 'Plan List';
+      return 'My Plans';
     case 'CreatePlan':
       return 'Create Plan';
     case 'Profile':
