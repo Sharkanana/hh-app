@@ -88,7 +88,7 @@ export default function RegisterScreen({navigation}) {
             updateErrorMsg(data.errors);
           }
           else {
-            navigation.navigate('Login', { successMsg: 'Account created. Please log in.'});
+            navigation.navigate('Login', { registered: true});
           }
         });
     }

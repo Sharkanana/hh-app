@@ -1,48 +1,39 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Text, View } from 'react-native';
+import Button from "react-native-button";
+
+import {userStore} from "../stores/userStore";
+import formStyles from "../styles/formStyles";
+import deviceStorage from "../services/deviceStorage";
 
 /**
  * Screen for editing profile
  */
-export default function ProfileScreen() {
+export default function ProfileScreen({navigation}) {
+
+  const { state, dispatch } = React.useContext(userStore);
+
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <View style={formStyles.container}>
 
-        <View style={styles.getStartedContainer}>
+      <Text>Email: {state.email}</Text>
 
-          <Text style={styles.getStartedText}>TODO: Profile screen</Text>
+      <View style={formStyles.buttonDiv}>
+        <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={logout}>Logout</Button>
+      </View>
 
-        </View>
-
-        <Button title="Logout" onPress={logout}/>
-
-      </ScrollView>
     </View>
   );
 
   function logout() {
-    //todo
+
+    //update user context to switch back to login stack
+    dispatch({ type: 'logout' });
+
+    //remove saved token
+    deviceStorage.deleteUser();
+
+    //head back to login page
+    navigation.navigate('Login', { loggedOut: true });
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  }
-});

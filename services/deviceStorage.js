@@ -6,17 +6,18 @@ const deviceStorage = {
     try {
       await AsyncStorage.setItem(key, value);
     } catch (error) {
-      console.log('AsyncStorage Error: ' + error.message);
+      console.log('AsyncStorage Save Error: ' + error.message);
     }
   },
 
   async loadUser() {
     try {
 
-      return await AsyncStorage.getItem('hh_user');
+      const user = await AsyncStorage.getItem('hh_user');
+      return JSON.parse(user);
 
     } catch (error) {
-      console.log('AsyncStorage Error: ' + error.message);
+      console.log('AsyncStorage Load User Error: ' + error.message);
     }
   },
 
@@ -24,7 +25,7 @@ const deviceStorage = {
     try{
       await AsyncStorage.removeItem('hh_user');
     } catch (error) {
-      console.log('AsyncStorage Error: ' + error.message);
+      console.log('AsyncStorage Delete User Error: ' + error.message);
     }
   },
 

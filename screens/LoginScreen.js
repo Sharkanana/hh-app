@@ -6,12 +6,65 @@ import axios from "axios";
 import formStyles from "../styles/formStyles";
 import Button from "react-native-button";
 import deviceStorage from "../services/deviceStorage";
+import {userStore} from "../stores/userStore";
 
 /**
  * Screen for creating plans
  */
-export default function LoginScreen({navigation, updateUser, route}) {
+export default function LoginScreen({navigation, route}) {
 
+  // Messaging from other routes
+  React.useEffect(() => {
+    if (route.params) {
+
+      if(route.params.registered) {
+        updateSuccessMsg('Account created. Please log in.');
+      }
+      if(route.params.loggedOut) {
+        updateSuccessMsg('Successfully logged out.');
+        updateFormValues({
+          ...formValues,
+          password: ''
+        });
+      }
+    }
+  }, [route.params]);
+
+  /** Login Stuff **/
+
+  const { dispatch } = React.useContext(userStore);
+
+  React.useEffect(function() {
+
+    async function checkLogin() {
+
+      try {
+        // Check for user
+        const userObj = await deviceStorage.loadUser();
+
+        // set auth
+        axios.defaults.headers.common['Authorization'] = `Bearer ${userObj.jwt}`;
+
+        // test our session
+        await axios.get('/api/test');
+
+        // success? set the user state
+        dispatch({type: 'setuser', user: userObj.user});
+
+        // now navigate to root
+        navigation.navigate('Root');
+
+      } catch(e) {
+        //durr
+      }
+    }
+
+    checkLogin();
+  }, []);
+
+  /** Form Stuff **/
+
+  const [successMsg, updateSuccessMsg] = React.useState('');
   const [errorMsg, updateErrorMsg] = React.useState('');
   const [formValues, updateFormValues] = React.useState({});
 
@@ -44,7 +97,7 @@ export default function LoginScreen({navigation, updateUser, route}) {
 
         <Form ref={formRef} type={User} options={options} onChange={onChange} value={formValues}/>
 
-        {route && route.params && route.params.successMsg.length > 0 && <Text style={formStyles.successDiv}>{route.params.successMsg}</Text>}
+        {successMsg.length > 0 && <Text style={formStyles.successDiv}>{successMsg}</Text>}
         {errorMsg.length > 0 && <Text style={formStyles.errorDiv}>{errorMsg}</Text>}
 
         <View style={formStyles.buttonDiv}>
@@ -62,7 +115,7 @@ export default function LoginScreen({navigation, updateUser, route}) {
 
   function login() {
 
-    updateErrorMsg('');
+    clearParams();
 
     if(formRef.current.getValue()) {
 
@@ -76,14 +129,18 @@ export default function LoginScreen({navigation, updateUser, route}) {
           }
           else {
 
-            deviceStorage.saveItem('hh_user', {
+            deviceStorage.saveItem('hh_user', JSON.stringify({
               user: data.payload.user,
               jwt: data.payload.token
-            });
+            }));
 
-            axios.defaults.Authorization = data.payload.token;
-            updateUser(data.payload.user);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${data.payload.token}`;
 
+            // update user context
+            dispatch({ type: 'setuser', user: data.payload.user });
+
+            // now navigate to root
+            navigation.navigate('Root');
           }
         });
     }
@@ -91,6 +148,13 @@ export default function LoginScreen({navigation, updateUser, route}) {
   }
 
   function register() {
+    clearParams();
     navigation.navigate('Register');
+  }
+
+  function clearParams() {
+    updateErrorMsg('');
+    updateSuccessMsg('');
+    navigation.setParams({ loggedOut: null, registered: null});
   }
 }
