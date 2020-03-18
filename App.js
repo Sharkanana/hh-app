@@ -5,28 +5,25 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import deviceStorage from "./services/deviceStorage";
+import axios from 'axios';
 
+import deviceStorage from "./services/deviceStorage";
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
-import userContext from "./contexts/userContext";
-import axios from 'axios';
 
 const Stack = createStackNavigator();
 
-
 export default function App(props) {
 
-  let currentUser = React.useContext(userContext);
-
+  // Included bootstrapping
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState(null);
-  const [jwt, setJWT] = React.useState(null);
-
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
+
+  const [currentUser, updateUser] = React.useState({});
 
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
@@ -44,15 +41,23 @@ export default function App(props) {
         });
 
         // Setup axios
-        axios.defaults.baseURL = 'https://hungryhelper-server.herokuapp.com/';
-        // axios.defaults.baseURL = 'http://192.168.50.205:8000/';
+        // axios.defaults.baseURL = 'https://hungryhelper-server.herokuapp.com/';
+        axios.defaults.baseURL = 'http://192.168.50.205:8000/';
 
-        // Check for login
-        await deviceStorage.loadJWT(setJWT);
+        // Check for user
+        const userObj = await deviceStorage.loadUser();
+
+        // set auth
+        axios.defaults.Authorization = userObj.jwt;
+
+        // test our session
+        await axios.get('/api/test');
+
+        // success? set the user state, allowing app access
+        updateUser(userObj.user);
 
       } catch (e) {
-        // We might want to provide this error information to an error reporting service
-        console.warn(e);
+        //that's fine...expected...user just isn't logged in, or their token is expired.
       } finally {
         setLoadingComplete(true);
         SplashScreen.hide();
@@ -68,7 +73,7 @@ export default function App(props) {
     return (
       <>
         {
-          currentUser ?
+          currentUser.id ?
             <View style={styles.container}>
               {Platform.OS === 'ios' && <StatusBar barStyle="default"/>}
               <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
@@ -80,7 +85,9 @@ export default function App(props) {
             :
             <NavigationContainer>
               <Stack.Navigator headerMode="none">
-                <Stack.Screen name="Login" component={LoginScreen}/>
+                <Stack.Screen name="Login">
+                  {props => <LoginScreen {...props} updateUser={updateUser}/>}
+                </Stack.Screen>
                 <Stack.Screen name="Register" component={RegisterScreen}/>
               </Stack.Navigator>
             </NavigationContainer>

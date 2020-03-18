@@ -10,6 +10,8 @@ export default {
   tabBar: '#fefefe',
   errorBackground: 'red',
   errorText: '#fff',
+  successBackground: '#197516',
+  successText: '#fff',
   warningBackground: '#EAEB5E',
   warningText: '#666804',
   noticeBackground: tintColor,

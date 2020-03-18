@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Colors from "../constants/Colors";
+import { Text, View } from 'react-native';
 import axios from "axios";
 import t from 'tcomb-form-native';
 import refinements from "../helpers/refinements";
 import Button from "react-native-button";
+import formStyles from "../styles/formStyles";
 
 /**
  * Screen for registering a new user
@@ -35,38 +35,40 @@ export default function RegisterScreen({navigation}) {
   };
 
   const Form = t.form.Form;
-
   const formRef = React.useRef();
 
   return (
     <>
-      <Text style={styles.title}>
+      <Text style={formStyles.title}>
         Register to Hungry Helper
       </Text>
 
-      <View style={styles.container}>
+      <View style={formStyles.container}>
 
         <Form ref={formRef} type={User} options={options} onChange={onChange} value={formValues}/>
 
-        {errorMsg.length > 0 && <Text style={styles.errorDiv}>{errorMsg}</Text>}
+        {errorMsg.length > 0 && <Text style={formStyles.errorDiv}>{errorMsg}</Text>}
 
-        <View style={styles.buttonDiv}>
-          <Button style={styles.formBtn} containerStyle={styles.formBtnContainer} onPress={cancel}>Cancel</Button>
-          <Button style={styles.formBtn} containerStyle={styles.formBtnContainer} onPress={register}>Register</Button>
+        <View style={formStyles.buttonDiv}>
+          <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={cancel}>Cancel</Button>
+          <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={register}>Register</Button>
         </View>
 
       </View>
     </>
   );
 
-  function onChange() {
-    updateFormValues(formRef.current.getValue());
+  function onChange(value) {
+    updateFormValues(value);
   }
 
   function cancel() {
-    navigation.navigate('Login');
+    navigation.navigate('Login', { successMsg: ''});
   }
+
   function register() {
+
+    updateErrorMsg('');
 
     if(formRef.current.getValue()) {
 
@@ -86,53 +88,9 @@ export default function RegisterScreen({navigation}) {
             updateErrorMsg(data.errors);
           }
           else {
-            navigation.navigate('Login');
+            navigation.navigate('Login', { successMsg: 'Account created. Please log in.'});
           }
         });
     }
   }
 }
-
-const styles = StyleSheet.create({
-  hidden: {
-    display: 'none'
-  },
-  title: {
-    fontSize: 25,
-    textAlign: 'center',
-    marginTop: 24,
-    backgroundColor: Colors.primary,
-    color: Colors.white,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-  },
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    backgroundColor: Colors.white,
-    padding: 10
-  },
-  errorDiv: {
-    backgroundColor: Colors.errorBackground,
-    color: Colors.errorText,
-    fontSize: 18,
-    padding: 3,
-    marginBottom: 5
-  },
-  buttonDiv: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'center'
-  },
-  formBtnContainer: {
-    flex: 1,
-    borderRadius: 4,
-    backgroundColor: Colors.secondary,
-    padding: 5,
-    margin: 5
-  },
-  formBtn: {
-    color: Colors.white
-  }
-});
