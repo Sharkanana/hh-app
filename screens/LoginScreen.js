@@ -40,13 +40,28 @@ export default function LoginScreen({navigation, route}) {
 
       try {
         // Check for user
-        const userObj = await deviceStorage.loadUser();
+        let userObj = await deviceStorage.loadUser();
 
         // set auth
         axios.defaults.headers.common['Authorization'] = `Bearer ${userObj.jwt}`;
 
         // test our session
-        await axios.get('/api/test');
+        await axios.get('/api/test')
+          .catch(async function(err) {
+
+            // so we have a user, but errored out...try to refresh
+
+            const result = await axios.post('/auth/token', {
+              userId: userObj.user.id,
+              refreshToken: userObj.refreshToken
+            });
+
+            userObj.jwt = result.data.token;
+
+            await deviceStorage.saveItem('hh_user', userObj);
+
+            await checkLogin();
+          });
 
         // success? set the user state
         dispatch({type: 'setuser', user: userObj.user});
@@ -132,10 +147,10 @@ export default function LoginScreen({navigation, route}) {
           }
           else {
 
-            deviceStorage.saveItem('hh_user', JSON.stringify({
+            deviceStorage.saveItem('hh_user', {
               user: data.payload.user,
               jwt: data.payload.token
-            }));
+            });
 
             axios.defaults.headers.common['Authorization'] = `Bearer ${data.payload.token}`;
 
