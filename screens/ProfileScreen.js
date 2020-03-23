@@ -14,15 +14,22 @@ export default function ProfileScreen({navigation}) {
   const { state, dispatch } = React.useContext(userStore);
 
   return (
-    <View style={formStyles.container}>
+    <>
 
-      <Text>Email: {state.email}</Text>
+      <Text style={formStyles.title}>
+        Profile
+      </Text>
 
-      <View style={formStyles.buttonDiv}>
-        <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={logout}>Logout</Button>
+      <View style={formStyles.container}>
+
+        <Text>Email: {state.email}</Text>
+
+        <View style={formStyles.buttonDiv}>
+          <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={logout}>Logout</Button>
+        </View>
+
       </View>
-
-    </View>
+    </>
   );
 
   function logout() {

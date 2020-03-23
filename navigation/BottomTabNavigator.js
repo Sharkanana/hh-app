@@ -29,7 +29,7 @@ export default function BottomTabNavigator({ navigation, route}) {
         name="CreatePlan"
         component={CreatePlanScreen}
         options={{
-          title: 'Create Plan',
+          title: 'Create a Plan',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-add" />,
         }}
       />
@@ -52,7 +52,7 @@ function getHeaderTitle(route) {
     case 'PlanList':
       return 'My Plans';
     case 'CreatePlan':
-      return 'Create Plan';
+      return 'Create a Plan';
     case 'Profile':
       return 'Edit Profile';
   }

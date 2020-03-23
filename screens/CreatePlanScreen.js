@@ -1,42 +1,80 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Text, View } from 'react-native';
+import formStyles from "../styles/formStyles";
+import t from "tcomb-form-native";
+import Button from "react-native-button";
+import axios from 'axios';
+import PlanOverview from "../components/PlanOverview";
 
 /**
  * Screen for creating plans
  */
-export default function CreatePlanScreen() {
+export default function CreatePlanScreen({navigation}) {
+
+  const [formValues, updateFormValues] = React.useState({});
+  const [errorMsg, updateErrorMsg] = React.useState('');
+  const [plan, updatePlan] = React.useState(null);
+
+  const NewPlan = t.struct({
+    location: t.String
+  });
+
+  const options = {
+    auto: 'placeholders'
+  };
+
+  const Form = t.form.Form;
+  const formRef = React.useRef();
+
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <>
 
-        <View style={styles.getStartedContainer}>
+      <Text style={formStyles.title}>
+        Create a Plan
+      </Text>
 
-          <Text style={styles.getStartedText}>TODO: Create plan screen</Text>
+      <View style={formStyles.container}>
 
-        </View>
+        {
+          plan ?
+            <PlanOverview plan={plan}/>
+            :
+            <PlanForm/>
+        }
 
-      </ScrollView>
-    </View>
+      </View>
+    </>
   );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
+  function PlanForm() {
+    return (
+      <>
+        <Form ref={formRef} type={NewPlan} options={options} onChange={onChange} value={formValues}/>
+
+        {errorMsg.length > 0 && <Text style={formStyles.errorDiv}>{errorMsg}</Text>}
+
+        <View style={formStyles.buttonDiv}>
+          <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={initPlan}>Create Plan</Button>
+        </View>
+      </>
+    );
   }
-});
+
+  function onChange(value) {
+    updateFormValues(value);
+  }
+
+  function initPlan() {
+
+    if(formRef.current.getValue()) {
+
+      axios.post('api/initPlan', formValues)
+        .then(function(result) {
+
+          updatePlan(result.data);
+
+        });
+    }
+
+  }
+}
