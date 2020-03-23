@@ -51,8 +51,11 @@ export default function LoginScreen({navigation, route}) {
         // success? set the user state
         dispatch({type: 'setuser', user: userObj.user});
 
-        // now navigate to root
-        navigation.navigate('Root');
+        // now reset and navigate to root
+        navigation.reset({
+          index: 0,
+          routes: [ {name: 'Root' }]
+        });
 
       } catch(e) {
         //durr
@@ -139,8 +142,11 @@ export default function LoginScreen({navigation, route}) {
             // update user context
             dispatch({ type: 'setuser', user: data.payload.user });
 
-            // now navigate to root
-            navigation.navigate('Root');
+            // now reset and navigate to root
+            navigation.reset({
+              index: 0,
+              routes: [ {name: 'Root' }]
+            });
           }
         });
     }

@@ -33,7 +33,11 @@ export default function ProfileScreen({navigation}) {
     //remove saved token
     deviceStorage.deleteUser();
 
-    //head back to login page
-    navigation.navigate('Login', { loggedOut: true });
+    //reset and head back to login page
+    navigation.reset({
+      index: 0,
+      routes: [ {name: 'Login', params: { loggedOut: true } }]
+    });
+
   }
 }
