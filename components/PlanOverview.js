@@ -5,22 +5,35 @@ import formStyles from "../styles/formStyles";
 /**
  * View for overview of a plan
  */
-export default function PlanOverview({ plan }) {
+export default function PlanOverview({ route }) {
+
+  React.useEffect(() => {
+    if (route.params && route.params.plan) {
+      updatePlan(route.params.plan);
+    }
+  }, [route.params]);
+
+  const [plan, updatePlan] = React.useState();
 
   return (
     <>
 
-      <Text>
-        Location: {plan.location}
-      </Text>
+      {
+        plan &&
+        <>
+          <Text>
+            Location: {plan.location}
+          </Text>
 
-      <View style={formStyles.container}>
+          <View style={formStyles.container}>
 
-        <MealView title="Breakfast" data={plan.b}/>
-        <MealView title="Lunch" data={plan.l}/>
-        <MealView title="Dinner" data={plan.d}/>
+            <MealView title="Breakfast" data={plan.b}/>
+          <MealView title="Lunch" data={plan.l}/>
+          <MealView title="Dinner" data={plan.d}/>
 
-      </View>
+          </View>
+        </>
+      }
     </>
   );
 
