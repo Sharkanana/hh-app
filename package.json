@@ -31,6 +31,7 @@
     "react-native-autocomplete-input": "^4.1.0",
     "react-native-button": "^2.4.0",
     "react-native-datepicker": "^1.7.2",
+    "react-native-emoji": "^1.8.0",
     "react-native-gesture-handler": "~1.5.0",
     "react-native-safe-area-context": "0.6.0",
     "react-native-screens": "2.0.0-alpha.12",

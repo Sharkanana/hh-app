@@ -9,12 +9,14 @@ import formStyles from "../styles/formStyles";
 import Config from "../constants/Config";
 import HH_Autocomplete from "./fields/Autocomplete";
 import HH_Datepicker from "./fields/Datepicker";
+import {userStore} from "../stores/userStore";
 
 /**
  * Form for new Plans
  */
 export default function PlanForm({navigation, route}) {
 
+  const { state } = React.useContext(userStore);
   const [errorMsg, updateErrorMsg] = React.useState('');
   const [data, updateData] = React.useState([]);
   const [query, updateQuery] = React.useState('');
@@ -102,7 +104,7 @@ export default function PlanForm({navigation, route}) {
 
     updateErrorMsg('');
 
-    axios.post('api/createPlan', {plan})
+    axios.post('api/createPlan', {plan: {...plan, user: state.id}})
       .then(function (result) {
 
         navigation.navigate('PlanOverview', { plan: result.data });

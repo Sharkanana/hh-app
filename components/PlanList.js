@@ -1,6 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import axios from "axios";
+import Emoji from 'react-native-emoji';
+
+import {userStore} from "../stores/userStore";
+import colors from '../constants/Colors';
+import Touchable from "./Touchable";
 
 /**
  * View for list of a plans
@@ -8,6 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 export default function PlanList({ navigation }) {
 
   const [ plans, updatePlans ] = React.useState([]);
+  const { state } = React.useContext(userStore);
 
   useFocusEffect(React.useCallback(() => {
       //load plans on focus
@@ -18,33 +25,67 @@ export default function PlanList({ navigation }) {
     }, [])
   );
 
+  function PlanDisplay({plan}) {
+    return (
+      <View style={localStyles.planContainer}>
+        <View style={localStyles.planInfo}>
+          <Text style={{fontWeight: 'bold'}}>
+            {plan.name}
+          </Text>
+          <Text>
+            {plan.location}
+          </Text>
+          <Text>
+            {plan.startDate} to {plan.endDate}
+          </Text>
+        </View>
+        <Touchable onPress={()=>deletePlan(plan.id)}>
+          <Emoji name="wastebasket" style={localStyles.closeButton} />
+        </Touchable>
+      </View>
+    );
+  }
+
   return (
-    <>
-      <FlatList
-        data={plans}
-        keyExtractor={item => `${item.id}_${item.name}`}
-        renderItem={({item}) => <Text style={localStyles.spotText} title={item.name}>{item.name}</Text>}
-      />
-    </>
+    <FlatList
+      data={plans}
+      keyExtractor={item => `${item.id}_${item.name}`}
+      renderItem={({item}) => <PlanDisplay plan={item}/>}
+    />
   );
+
+  function deletePlan(planId) {
+
+    Alert.alert('Delete plan?',
+      'Are you sure you wish to delete this plan?',
+      [
+        { text: 'Cancel' },
+        { text: 'Yes', onPress: ()=> {
+            axios.post('api/deletePlan', {planId})
+              .then(function(result) {
+                if(result.data) {
+                  Alert.alert('Plan successfully deleted.');
+                  loadPlans()
+                }
+                else {
+                  Alert.alert('Error deleting plan.');
+                }
+              })
+              .catch(function(err) {
+                Alert.alert('Error deleting plan.');
+              });
+          }}
+      ]);
+  }
 
   async function loadPlans() {
 
-    // todo: lookup plans by user id
+    const results = await axios.post('api/loadPlans', {
+      user: state.id
+    });
 
-    updatePlans([
-      {
-        id: '125235623f3asd',
-        name: 'Eurotrip 2020'
-      },
-      {
-        id: '125235623f3asdffff',
-        name: 'Miami 2021'
-      }
-    ]);
-
+    updatePlans(results.data);
   }
-
 }
 
 const localStyles = StyleSheet.create({
@@ -63,5 +104,23 @@ const localStyles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     padding: 5
+  },
+  planContainer: {
+    borderWidth: 2,
+    borderColor: colors.secondary,
+    borderRadius: 4,
+    margin: 2,
+    padding: 3,
+    flexDirection: 'row',
+  },
+  planInfo: {
+    flex: 1
+  },
+  closeButton: {
+    fontSize: 30,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginRight: 5,
+    color: 'red'
   }
 });
