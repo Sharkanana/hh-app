@@ -27,6 +27,8 @@ const formStyles = StyleSheet.create({
     fontSize: 18,
     padding: 3,
     marginBottom: 5,
+    marginLeft: 4,
+    marginRight: 4,
     borderRadius: 4,
   },
   successDiv: {
@@ -51,6 +53,16 @@ const formStyles = StyleSheet.create({
   },
   formBtn: {
     color: Colors.white
+  },
+  dateRangeContainer: {
+    flexDirection: 'row',
+    paddingBottom: 5
+  },
+  textField: {
+    borderWidth: 1,
+    borderColor: 'rgba(84,84,84,0.38)',
+    padding: 5,
+    marginBottom: 5
   }
 });
 

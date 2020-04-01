@@ -28,8 +28,8 @@ export default function PlanOverview({ route }) {
           <View style={formStyles.container}>
 
             <MealView title="Breakfast" data={plan.b}/>
-          <MealView title="Lunch" data={plan.l}/>
-          <MealView title="Dinner" data={plan.d}/>
+            <MealView title="Lunch" data={plan.l}/>
+            <MealView title="Dinner" data={plan.d}/>
 
           </View>
         </>
@@ -45,11 +45,13 @@ export default function PlanOverview({ route }) {
           {title}
         </Text>
 
+        {data.length > 0 &&
         <FlatList
           data={data}
           keyExtractor={item => `${title}_${item.name}`}
           renderItem={({item}) => <Text style={localStyles.spotText} title={item.name}>{item.name}</Text>}
         />
+        }
 
       </View>
     );

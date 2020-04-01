@@ -1,6 +1,5 @@
 import * as React from "react";
-import Autocomplete from "react-native-autocomplete-input";
-import {Keyboard, Text, TouchableOpacity, View, StyleSheet} from "react-native";
+import {Keyboard, Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
 import Button from "react-native-button";
 import axios from 'axios';
 import { debounce } from 'lodash';
@@ -8,6 +7,8 @@ import { debounce } from 'lodash';
 import utils from '../helpers/utils';
 import formStyles from "../styles/formStyles";
 import Config from "../constants/Config";
+import HH_Autocomplete from "./fields/Autocomplete";
+import HH_Datepicker from "./fields/Datepicker";
 
 /**
  * Form for new Plans
@@ -18,34 +19,48 @@ export default function PlanForm({navigation, route}) {
   const [data, updateData] = React.useState([]);
   const [query, updateQuery] = React.useState('');
   const [uuid, updateUuid] = React.useState(utils.uuidv4());
-  const [location, updateLocation] = React.useState();
+  const [plan, updatePlan] = React.useState({});
 
   const throttleFilterData = debounce(filterData, 200);
 
   return (
-    <>
+    <View style={formStyles.container}>
 
-      <View style={styles.container}>
-        <Autocomplete
-          data={location ? [] : data}
-          defaultValue={query}
-          onChangeText={(text) => throttleFilterData(text)}
-          containerStyle={styles.autocompleteContainer}
-          placeholder="Enter location"
-          renderItem={({ item, i }) => (
-            <TouchableOpacity onPress={() => selectLocation(item)}>
-              <Text style={styles.itemText}>{item.description}</Text>
-            </TouchableOpacity>
-          )}
+      <TextInput value={plan.name} placeholder="Plan Name" style={formStyles.textField} onChangeText={(text)=>{updatePlan({...plan, name: text})}} />
+
+      <View style={formStyles.dateRangeContainer}>
+        <HH_Datepicker
+          style={{flex: 1}}
+          date={plan.startDate}
+          onDateChange={(date)=>updatePlan({...plan, startDate: date})}
+          placeholder="Start Date"
+        />
+        <HH_Datepicker
+          style={{flex: 1}}
+          date={plan.endDate}
+          onDateChange={(date)=>updatePlan({...plan, endDate: date})}
+          placeholder="End Date"
         />
       </View>
+
+      <HH_Autocomplete
+        data={plan.place_id ? [] : data}
+        defaultValue={query}
+        onChangeText={(text) => throttleFilterData(text)}
+        placeholder="Enter location"
+        renderItem={({ item, i }) => (
+          <TouchableOpacity onPress={() => selectLocation(item)}>
+            <Text style={styles.itemText}>{item.description}</Text>
+          </TouchableOpacity>
+        )}
+      />
 
       {errorMsg.length > 0 && <Text style={formStyles.errorDiv}>{errorMsg}</Text>}
 
       <View style={formStyles.buttonDiv}>
-        <Button disabledContainerStyle={styles.disabledBtn} disabled={!validateForm()} style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={initPlan}>Create Plan</Button>
+        <Button disabledContainerStyle={styles.disabledBtn} disabled={!validateForm()} style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={createPlan}>Create Plan</Button>
       </View>
-    </>
+    </View>
   );
 
   // autocomplete lookup function
@@ -71,43 +86,38 @@ export default function PlanForm({navigation, route}) {
   function selectLocation(item) {
     updateUuid(utils.uuidv4);
     updateQuery(item.description);
-    updateLocation(item.place_id);
+    updatePlan({
+      ...plan,
+      place_id: item.place_id
+    });
     Keyboard.dismiss();
   }
 
   // true if form is valid
   function validateForm() {
-    return !!location;
+    return !!plan.place_id;
   }
 
-  function initPlan() {
+  function createPlan() {
 
-    axios.post('api/createPlan', { place_id: location })
+    updateErrorMsg('');
+
+    axios.post('api/createPlan', {plan})
       .then(function (result) {
 
         navigation.navigate('PlanOverview', { plan: result.data });
 
+      })
+      .catch(function(err) {
+        updateErrorMsg("Server error.");
       });
   }
 
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#F5FCFF',
-    flex: 1,
-    paddingTop: 25
-  },
   disabledBtn: {
     backgroundColor: 'gray'
-  },
-  autocompleteContainer: {
-    flex: 1,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    zIndex: 1
   },
   itemText: {
     fontSize: 15,
