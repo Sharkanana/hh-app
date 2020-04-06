@@ -7,6 +7,7 @@ import Emoji from 'react-native-emoji';
 import {userStore} from "../stores/userStore";
 import colors from '../constants/Colors';
 import Touchable from "./Touchable";
+import formStyles from "../styles/formStyles";
 
 /**
  * View for list of a plans
@@ -28,17 +29,19 @@ export default function PlanList({ navigation }) {
   function PlanDisplay({plan}) {
     return (
       <View style={localStyles.planContainer}>
-        <View style={localStyles.planInfo}>
-          <Text style={{fontWeight: 'bold'}}>
-            {plan.name}
-          </Text>
-          <Text>
-            {plan.location}
-          </Text>
-          <Text>
-            {plan.startDate} to {plan.endDate}
-          </Text>
-        </View>
+        <Touchable onPress={()=>loadPlan(plan.id)}>
+          <View style={localStyles.planInfo}>
+            <Text style={{fontWeight: 'bold'}}>
+              {plan.name}
+            </Text>
+            <Text>
+              {plan.location}
+            </Text>
+            <Text>
+              {plan.startDate} to {plan.endDate}
+            </Text>
+          </View>
+        </Touchable>
         <Touchable onPress={()=>deletePlan(plan.id)}>
           <Emoji name="wastebasket" style={localStyles.closeButton} />
         </Touchable>
@@ -47,12 +50,23 @@ export default function PlanList({ navigation }) {
   }
 
   return (
+    <View>
+
+      <Text style={formStyles.title}>
+        My Plans
+      </Text>
+
     <FlatList
       data={plans}
       keyExtractor={item => `${item.id}_${item.name}`}
       renderItem={({item}) => <PlanDisplay plan={item}/>}
     />
+    </View>
   );
+
+  function loadPlan(planId) {
+    navigation.navigate('PlanOverview', { plan: planId } );
+  }
 
   function deletePlan(planId) {
 
@@ -112,6 +126,7 @@ const localStyles = StyleSheet.create({
     margin: 2,
     padding: 3,
     flexDirection: 'row',
+    backgroundColor: 'white'
   },
   planInfo: {
     flex: 1

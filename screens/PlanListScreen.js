@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Text } from 'react-native';
-import formStyles from "../styles/formStyles";
 import PlanOverview from "../components/PlanOverview";
 import PlanList from "../components/PlanList";
 import {createStackNavigator} from "@react-navigation/stack";
@@ -13,10 +11,6 @@ const Stack = createStackNavigator();
 export default function PlanListScreen() {
   return (
     <>
-
-      <Text style={formStyles.title}>
-        My Plans
-      </Text>
 
       <Stack.Navigator headerMode="none">
         <Stack.Screen name="PlanList" component={PlanList}/>
