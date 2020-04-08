@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Keyboard, Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
+import {Keyboard, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
 import Button from "react-native-button";
 import axios from 'axios';
 import { debounce } from 'lodash';
@@ -7,9 +7,10 @@ import { debounce } from 'lodash';
 import utils from '../helpers/utils';
 import formStyles from "../styles/formStyles";
 import Config from "../constants/Config";
-import HH_Autocomplete from "./fields/Autocomplete";
-import HH_Datepicker from "./fields/Datepicker";
+import HH_Autocomplete from "./pieces/fields/Autocomplete";
+import HH_Datepicker from "./pieces/fields/Datepicker";
 import {userStore} from "../stores/userStore";
+import HH_Text from "./pieces/Text";
 
 /**
  * Form for new Plans
@@ -52,12 +53,12 @@ export default function PlanForm({navigation, route}) {
         placeholder="Enter location"
         renderItem={({ item, i }) => (
           <TouchableOpacity onPress={() => selectLocation(item)}>
-            <Text style={styles.itemText}>{item.description}</Text>
+            <HH_Text style={styles.itemText}>{item.description}</HH_Text>
           </TouchableOpacity>
         )}
       />
 
-      {errorMsg.length > 0 && <Text style={formStyles.errorDiv}>{errorMsg}</Text>}
+      {errorMsg.length > 0 && <HH_Text style={formStyles.errorDiv}>{errorMsg}</HH_Text>}
 
       <View style={formStyles.buttonDiv}>
         <Button disabledContainerStyle={styles.disabledBtn} disabled={!validateForm()} style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={createPlan}>Create Plan</Button>

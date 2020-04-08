@@ -6,6 +6,7 @@ const formStyles = StyleSheet.create({
     display: 'none'
   },
   title: {
+    fontFamily: 'montserrat',
     fontSize: 25,
     textAlign: 'center',
     marginTop: 24,
@@ -13,6 +14,10 @@ const formStyles = StyleSheet.create({
     color: Colors.white,
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
+  },
+  subTitle: {
+    marginLeft: 10,
+    marginTop: 5
   },
   container: {
     flex: 1,

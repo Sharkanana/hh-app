@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, FlatList, Alert } from 'react-native';
+import { StyleSheet, View, FlatList, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from "axios";
 import Emoji from 'react-native-emoji';
 
 import {userStore} from "../stores/userStore";
 import colors from '../constants/Colors';
-import Touchable from "./Touchable";
+import Touchable from "./pieces/Touchable";
 import formStyles from "../styles/formStyles";
+import HH_Text from "./pieces/Text";
 
 /**
  * View for list of a plans
@@ -31,15 +32,15 @@ export default function PlanList({ navigation }) {
       <View style={localStyles.planContainer}>
         <Touchable onPress={()=>loadPlan(plan.id)}>
           <View style={localStyles.planInfo}>
-            <Text style={{fontWeight: 'bold'}}>
+            <HH_Text style={{fontWeight: 'bold'}}>
               {plan.name}
-            </Text>
-            <Text>
+            </HH_Text>
+            <HH_Text>
               {plan.location}
-            </Text>
-            <Text>
+            </HH_Text>
+            <HH_Text>
               {plan.startDate} to {plan.endDate}
-            </Text>
+            </HH_Text>
           </View>
         </Touchable>
         <Touchable onPress={()=>deletePlan(plan.id)}>
@@ -52,9 +53,9 @@ export default function PlanList({ navigation }) {
   return (
     <View>
 
-      <Text style={formStyles.title}>
+      <HH_Text style={formStyles.title}>
         My Plans
-      </Text>
+      </HH_Text>
 
     <FlatList
       data={plans}

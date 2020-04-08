@@ -35,7 +35,8 @@ export default function App(props) {
         // Load fonts
         await Font.loadAsync({
           ...Ionicons.font,
-          'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+          'roboto': require('./assets/fonts/Roboto-Regular.ttf'),
+          'montserrat': require('./assets/fonts/Montserrat-Regular.ttf'),
         });
 
         // Setup axios

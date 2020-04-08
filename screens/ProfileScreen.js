@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Button from "react-native-button";
 
 import {userStore} from "../stores/userStore";
 import formStyles from "../styles/formStyles";
 import deviceStorage from "../services/deviceStorage";
+import HH_Text from "../components/pieces/Text";
 
 /**
  * Screen for editing profile
@@ -16,13 +17,13 @@ export default function ProfileScreen({navigation}) {
   return (
     <>
 
-      <Text style={formStyles.title}>
+      <HH_Text style={formStyles.title}>
         Profile
-      </Text>
+      </HH_Text>
 
       <View style={formStyles.container}>
 
-        <Text>Email: {state.email}</Text>
+        <HH_Text>Email: {state.email}</HH_Text>
 
         <View style={formStyles.buttonDiv}>
           <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={logout}>Logout</Button>

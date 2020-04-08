@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import axios from "axios";
 import t from 'tcomb-form-native';
 import refinements from "../helpers/refinements";
 import Button from "react-native-button";
 import formStyles from "../styles/formStyles";
+import HH_Text from "../components/pieces/Text";
 
 /**
  * Screen for registering a new user
@@ -39,15 +40,15 @@ export default function RegisterScreen({navigation}) {
 
   return (
     <>
-      <Text style={formStyles.title}>
+      <HH_Text style={formStyles.title}>
         Register to Hungry Helper
-      </Text>
+      </HH_Text>
 
       <View style={formStyles.container}>
 
         <Form ref={formRef} type={User} options={options} onChange={onChange} value={formValues}/>
 
-        {errorMsg.length > 0 && <Text style={formStyles.errorDiv}>{errorMsg}</Text>}
+        {errorMsg.length > 0 && <HH_Text style={formStyles.errorDiv}>{errorMsg}</HH_Text>}
 
         <View style={formStyles.buttonDiv}>
           <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={cancel}>Cancel</Button>

@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, FlatList, Image, Platform } from 'react-native';
+import { StyleSheet, View, FlatList, Image, Platform, Linking } from 'react-native';
 import formStyles from "../styles/formStyles";
 import Colors from "../constants/Colors";
 import axios from 'axios';
 import images from "../assets/images/images";
+import Touchable from "./pieces/Touchable";
+import {Ionicons} from "@expo/vector-icons";
+import HH_Text from "./pieces/Text";
 
 /**
  * View for overview of a plan
@@ -24,9 +27,13 @@ export default function PlanOverview({ route }) {
       {
         plan &&
         <>
-          <Text style={formStyles.title}>
-            {plan.name} - {plan.location}
-          </Text>
+          <HH_Text style={formStyles.title}>
+            {plan.name}
+          </HH_Text>
+
+          <HH_Text style={formStyles.subTitle}>
+            Location: {plan.location}
+          </HH_Text>
 
           <View style={styles.container}>
 
@@ -46,7 +53,7 @@ export default function PlanOverview({ route }) {
 
     return (
       <View style={styles.dayContainer}>
-        <Text style={styles.dateTab}>{day.date}</Text>
+        <HH_Text style={styles.dateTab}>{day.date}</HH_Text>
         <MealView title="Breakfast" data={day.b}/>
         <MealView title="Lunch" data={day.l}/>
         <MealView title="Dinner" data={day.d}/>
@@ -58,20 +65,43 @@ export default function PlanOverview({ route }) {
 
     return (
       <View style={styles.mealContainer}>
-        <Text style={styles.mealTitle}>
+        <HH_Text style={styles.mealTitle}>
           {title}
-        </Text>
+        </HH_Text>
 
-        <Text style={styles.nameDisplay}>
-          {data.name}
-        </Text>
-        <Text>
-          {data.categories}
-        </Text>
+        <View style={styles.mealContent}>
 
-        <View style={styles.ratingRow}>
-          <Image style={styles.ratingImage} source={images.ratings[Platform.OS === 'ios' ? 'web_and_ios' : 'android'][data.rating]}/>
-          <Text style={styles.ratingCount}>{data.review_count} reviews</Text>
+          <View style={styles.mealInfo}>
+
+            <HH_Text style={styles.nameDisplay}>
+              {data.name}
+            </HH_Text>
+            <HH_Text>
+              {data.categories}
+            </HH_Text>
+
+            <View style={styles.ratingRow}>
+              <Image style={styles.ratingImage} source={images.ratings[Platform.OS === 'ios' ? 'web_and_ios' : 'android'][data.rating]}/>
+              <HH_Text style={styles.ratingCount}>{data.review_count} reviews</HH_Text>
+            </View>
+
+          </View>
+          <View style={styles.mealActions}>
+            <Touchable onPress={()=>Linking.openURL(data.url)}>
+              <Image
+                source={images.yelp_logo}
+                style={styles.yelpIcon}
+              />
+            </Touchable>
+            <Touchable>
+              <Ionicons
+                name='md-close-circle'
+                size={30}
+                color={Colors.errorRed}
+              />
+            </Touchable>
+          </View>
+
         </View>
 
       </View>
@@ -101,7 +131,7 @@ const styles = StyleSheet.create({
   },
   dateTab: {
     backgroundColor: 'white',
-    width: 100,
+    width: 140,
     padding: 3,
     borderColor: Colors.grayBorder,
     borderWidth: 1,
@@ -142,11 +172,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5
   },
+  yelpIcon: {
+    marginLeft: 20,
+    height: 30,
+    width: 80,
+    marginRight: 10,
+    resizeMode: 'contain',
+  },
   mealTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.secondary,
     textAlign: 'center'
+  },
+  mealContent: {
+    flexDirection: 'row'
+  },
+  mealInfo: {
+    flex: 1
+  },
+  mealActions: {
+    paddingTop: 10,
+    width: 150,
+    flexDirection: 'row'
   },
   spotText: {
     fontSize: 14,

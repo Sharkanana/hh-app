@@ -17,5 +17,6 @@ export default {
   noticeBackground: tintColor,
   noticeText: '#fff',
   grayBorder: 'rgba(110,110,110,0.38)',
-  transparent: 'rgba(0,0,0,0)'
+  transparent: 'rgba(0,0,0,0)',
+  errorRed: '#e60000'
 };

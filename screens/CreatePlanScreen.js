@@ -1,8 +1,8 @@
 import * as React from 'react';
 import PlanForm from "../components/PlanForm";
 import {createStackNavigator} from "@react-navigation/stack";
-import {Text} from "react-native";
 import formStyles from "../styles/formStyles";
+import HH_Text from "../components/pieces/Text";
 
 const Stack = createStackNavigator();
 
@@ -15,9 +15,9 @@ export default function CreatePlanScreen({navigation}) {
   return (
     <>
 
-      <Text style={formStyles.title}>
+      <HH_Text style={formStyles.title}>
         Create a Plan
-      </Text>
+      </HH_Text>
 
       <Stack.Navigator headerMode="none">
         <Stack.Screen name="PlanForm" component={PlanForm}/>

@@ -3,6 +3,7 @@ const androidRatingPrefix = './yelp_stars/android/small/stars_small_',
       iosRatingPrefix = './yelp_stars/web_and_ios/small/small_';
 
 const images = {
+  yelp_logo: require('./yelp_logo.png'),
   ratings: {
     android: {
       0: require(`${androidRatingPrefix}0.png`),
