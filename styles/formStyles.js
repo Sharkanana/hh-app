@@ -23,7 +23,7 @@ const formStyles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    padding: 10
+    padding: 10,
   },
   errorDiv: {
     backgroundColor: Colors.errorBackground,
@@ -65,6 +65,7 @@ const formStyles = StyleSheet.create({
   textField: {
     borderWidth: 1,
     borderColor: Colors.grayBorder,
+    backgroundColor: 'white',
     padding: 5,
     marginBottom: 5
   }

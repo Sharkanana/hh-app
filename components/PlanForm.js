@@ -1,8 +1,9 @@
 import * as React from "react";
-import {Keyboard, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
+import { Text, Keyboard, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
 import Button from "react-native-button";
 import axios from 'axios';
 import { debounce } from 'lodash';
+import Moment from 'moment';
 
 import utils from '../helpers/utils';
 import formStyles from "../styles/formStyles";
@@ -33,15 +34,19 @@ export default function PlanForm({navigation, route}) {
 
       <View style={formStyles.dateRangeContainer}>
         <HH_Datepicker
-          style={{flex: 1}}
-          date={plan.startDate}
-          onDateChange={(date)=>updatePlan({...plan, startDate: date})}
+          style={{flex: 1, marginRight: 5}}
+          value={plan.startDate}
+          onChange={selectStartDate}
           placeholder="Start Date"
         />
+        <Text style={styles.toSeparator}>
+          to
+        </Text>
         <HH_Datepicker
-          style={{flex: 1}}
-          date={plan.endDate}
-          onDateChange={(date)=>updatePlan({...plan, endDate: date})}
+          style={{flex: 1, marginLeft: 5}}
+          value={plan.endDate}
+          minDate={plan.startDate ? Moment(plan.startDate).add(1, 'day').toDate() : new Date()}
+          onChange={selectEndDate}
           placeholder="End Date"
         />
       </View>
@@ -65,6 +70,28 @@ export default function PlanForm({navigation, route}) {
       </View>
     </View>
   );
+
+  function selectStartDate(date) {
+
+    let endDate = plan.endDate;
+
+    // if end date exists, and is on or before start date, move end date to one day after start date
+    if(endDate && Moment(endDate).isSameOrBefore(date)) {
+      endDate = Moment(date).add(1, 'day').toDate();
+    }
+
+    updatePlan({...plan,
+      startDate: date,
+      endDate: endDate
+    });
+  }
+
+  function selectEndDate(date) {
+    updatePlan({
+      ...plan,
+      endDate: date
+    });
+  }
 
   // autocomplete lookup function
   async function filterData(query) {
@@ -119,18 +146,15 @@ export default function PlanForm({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+  toSeparator: {
+    paddingTop: 10
+  },
   disabledBtn: {
     backgroundColor: 'gray'
   },
   itemText: {
     fontSize: 15,
     margin: 2
-  },
-  descriptionContainer: {
-    // `backgroundColor` needs to be set otherwise the
-    // autocomplete input will disappear on text input.
-    backgroundColor: '#F5FCFF',
-    marginTop: 25
   },
   infoText: {
     textAlign: 'center'

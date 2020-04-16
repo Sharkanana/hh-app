@@ -1,37 +1,70 @@
 import React from 'react'
-import DatePicker from 'react-native-datepicker'
+import {View, Text, StyleSheet} from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Moment from 'moment';
+
+import Touchable from "../Touchable";
+import Colors from "../../../constants/Colors";
 
 /**
- * Defaults for date picker
+ * Datepicker component
  *
- * must configure: date, onDateChange
+ * value, onChange, placeholder, minDate, maxDate, style
  */
 export default function HH_Datepicker(props) {
 
-  return (
-    <DatePicker
-      style={{
+  // update value if prop value changed
+  React.useEffect(function() {
+    updateValue(props.value);
+  }, [props.value]);
 
-      }}
-      mode="date"
-      placeholder="Select date"
-      format="YYYY-MM-DD"
-      minDate={new Date()}
-      confirmBtnText="Confirm"
-      cancelBtnText="Cancel"
-      customStyles={{
-        dateIcon: {
-          position: 'absolute',
-          left: 0,
-          top: 4,
-          marginLeft: 0
-        },
-        dateInput: {
-          marginLeft: 36
-        }
-      }}
-      {...props}
-    />
+  const [showDate, updateShowDate] = React.useState(false);
+  const [value, updateValue] = React.useState(props.value);
+
+  return (
+    <View style={{...styles.containerStyle, ...props.style}}>
+      <Touchable onPress={()=>updateShowDate(true)}>
+        <Text style={[styles.touchStyle, !value ? styles.placeholderStyle : {}]}>{value ? Moment(value).format('MMM Do, YYYY (ddd)') : props.placeholder || 'Select Date'}</Text>
+      </Touchable>
+      {showDate && (
+        <DateTimePicker
+          mode="date"
+          value={value || props.minDate || new Date()}
+          minimumDate={props.minDate || new Date()}
+          maximumDate={props.maxDate}
+          onChange={onChange}
+        />
+      )}
+    </View>
   );
 
+  function onChange(evt, date) {
+
+    //don't update anything on cancel
+    if(evt.type === 'dismissed') {
+      updateShowDate(false);
+      return;
+    }
+
+    updateShowDate(false);
+    updateValue(date);
+    props.onChange && props.onChange(date);
+  }
+
 }
+
+const styles = StyleSheet.create({
+  containerStyle: {
+    borderWidth: 1,
+    borderColor: Colors.grayBorder,
+    height: 40,
+    backgroundColor: 'white'
+  },
+  touchStyle: {
+    padding: 4,
+    paddingTop: 8
+  },
+  placeholderStyle: {
+    color: Colors.grayBorder
+  }
+});
