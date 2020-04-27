@@ -54,14 +54,14 @@ export default function PlanOverview({ route }) {
     return (
       <View style={styles.dayContainer}>
         <HH_Text style={styles.dateTab}>{day.date}</HH_Text>
-        <MealView title="Breakfast" data={day.b}/>
-        <MealView title="Lunch" data={day.l}/>
-        <MealView title="Dinner" data={day.d}/>
+        <MealView title="Breakfast" data={day.b} date={day.date}/>
+        <MealView title="Lunch" data={day.l} date={day.date}/>
+        <MealView title="Dinner" data={day.d} date={day.date}/>
       </View>
     );
   }
 
-  function MealView({title, data}) {
+  function MealView({title, data, date}) {
 
     return (
       <View style={styles.mealContainer}>
@@ -93,7 +93,7 @@ export default function PlanOverview({ route }) {
                 style={styles.yelpIcon}
               />
             </Touchable>
-            <Touchable>
+            <Touchable onPress={()=>newSuggestion(date, title)}>
               <Ionicons
                 name='md-close-circle'
                 size={30}
@@ -106,6 +106,31 @@ export default function PlanOverview({ route }) {
 
       </View>
     );
+  }
+
+  async function newSuggestion(date, meal) {
+
+    const result = await axios.post('api/newSuggestion', {
+      id: plan._id,
+      date,
+      meal
+    });
+
+    // copy days, but update the date/meal in question
+    const updatedDays = plan.days.map(function(day) {
+      if(day.date === date) {
+        day[meal.charAt(0).toLowerCase()] = result.data;
+        return day;
+      }
+
+      return day;
+    });
+
+    // update plan state
+    updatePlan({
+      ...plan,
+      days: updatedDays
+    });
   }
 
   async function loadPlan(planId) {
