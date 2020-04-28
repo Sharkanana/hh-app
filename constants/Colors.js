@@ -2,7 +2,7 @@ const tintColor = '#2f95dc';
 
 export default {
   primary: '#FFBC79',
-  secondary: 'rgba(64,162,255,0.61)',
+  secondary: 'rgba(64,162,255,0.89)',
   white: '#fff',
   tintColor,
   tabIconDefault: '#ccc',
@@ -16,6 +16,7 @@ export default {
   warningText: '#666804',
   noticeBackground: tintColor,
   noticeText: '#fff',
+  moneyGreen: '#1b8713',
   grayBorder: 'rgba(110,110,110,0.38)',
   transparent: 'rgba(0,0,0,0)',
   errorRed: '#e60000'

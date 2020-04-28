@@ -76,9 +76,15 @@ export default function PlanOverview({ route }) {
             <HH_Text style={styles.nameDisplay}>
               {data.name}
             </HH_Text>
-            <HH_Text>
-              {data.categories}
-            </HH_Text>
+
+            <View style={styles.priceAndCat}>
+              <HH_Text style={styles.priceDisplay}>
+                {data.price} ·
+              </HH_Text>
+              <HH_Text>
+                 {data.categories}
+              </HH_Text>
+            </View>
 
             <View style={styles.ratingRow}>
               <Image style={styles.ratingImage} source={images.ratings[Platform.OS === 'ios' ? 'web_and_ios' : 'android'][data.rating]}/>
@@ -165,6 +171,14 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
+  priceAndCat: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  priceDisplay: {
+    color: Colors.moneyGreen,
+    paddingRight: 5
+  },
   nameDisplay: {
     fontWeight: 'bold'
   },
@@ -180,8 +194,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   ratingImage: {
-    height: 30,
-    width: 150,
+    height: 25,
+    width: 130,
     resizeMode: 'contain',
   },
   ratingCount: {
