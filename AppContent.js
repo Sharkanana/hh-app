@@ -8,21 +8,22 @@ import BottomTabNavigator from './navigation/BottomTabNavigator';
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { appContextStore } from "./stores/appContextStore";
+import Colors from "./constants/Colors";
 
 const Stack = createStackNavigator();
 
 export default function AppContent({ containerRef, initialNavigationState}) {
 
-  const { dispatch } = React.useContext(appContextStore);
-  const [spinning, updateSpinning] = React.useState(false);
-
-  dispatch({ type: 'init-spin', fn: updateSpinning });
+  const { state } = React.useContext(appContextStore);
 
   return (
     <>
       <Spinner
-        visible={spinning}
-        textContent={'Loading...'}/>
+        visible={state.spinning}
+        color={Colors.primary}
+        overlayColor={Colors.primaryFaded}
+        textContent={'Loading...'}
+      />
 
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default"/>}
@@ -42,5 +43,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff'
-  },
+  }
 });

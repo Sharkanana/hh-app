@@ -4,7 +4,7 @@
 import React, {createContext, useReducer} from 'react';
 
 const initialState = {
-  spinFn: null,
+  spinning: null,
   user: {}
 };
 const appContextStore = createContext(initialState);
@@ -12,24 +12,20 @@ const { Provider } = appContextStore;
 
 const AppContextProvider = ({ children } ) => {
 
+  // setting up spinning state for global spinner
+  const [spinning, updateSpinning] = React.useState(false);
+  initialState.spinning = spinning;
+
   const [state, dispatch] = useReducer((state, action) => {
 
     switch(action.type) {
 
-      case 'init-spin':
-        state.spinFn = action.fn;
-        return state;
-
       case 'spin-on':
-        if(state.spinFn) {
-          state.spinFn(true);
-        }
+        updateSpinning(true);
         return state;
 
       case 'spin-off':
-        if(state.spinFn) {
-          state.spinFn(false);
-        }
+        updateSpinning(false);
         return state;
 
       case 'set-user':

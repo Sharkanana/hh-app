@@ -2,6 +2,7 @@ const tintColor = '#2f95dc';
 
 export default {
   primary: '#FFBC79',
+  primaryFaded: 'rgba(255,188,121,0.16)',
   secondary: 'rgba(64,162,255,0.89)',
   white: '#fff',
   tintColor,
