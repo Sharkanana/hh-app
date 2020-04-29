@@ -10,7 +10,7 @@ import formStyles from "../styles/formStyles";
 import Config from "../constants/Config";
 import HH_Autocomplete from "./pieces/fields/Autocomplete";
 import HH_Datepicker from "./pieces/fields/Datepicker";
-import {userStore} from "../stores/userStore";
+import {appContextStore} from "../stores/appContextStore";
 import HH_Text from "./pieces/Text";
 
 /**
@@ -18,7 +18,8 @@ import HH_Text from "./pieces/Text";
  */
 export default function PlanForm({navigation, route}) {
 
-  const { state } = React.useContext(userStore);
+  const user = React.useContext(appContextStore).state.user;
+
   const [errorMsg, updateErrorMsg] = React.useState('');
   const [data, updateData] = React.useState([]);
   const [query, updateQuery] = React.useState('');

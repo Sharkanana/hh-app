@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import axios from "axios";
 import Emoji from 'react-native-emoji';
 
-import {userStore} from "../stores/userStore";
+import {appContextStore} from "../stores/appContextStore";
 import colors from '../constants/Colors';
 import Touchable from "./pieces/Touchable";
 import formStyles from "../styles/formStyles";
@@ -16,7 +16,9 @@ import HH_Text from "./pieces/Text";
 export default function PlanList({ navigation }) {
 
   const [ plans, updatePlans ] = React.useState([]);
-  const { state } = React.useContext(userStore);
+
+  const { state, dispatch } = React.useContext(appContextStore);
+  const user = state.user;
 
   useFocusEffect(React.useCallback(() => {
       //load plans on focus
@@ -95,11 +97,15 @@ export default function PlanList({ navigation }) {
 
   async function loadPlans() {
 
+    dispatch({type: 'spin-on'});
+
     const results = await axios.post('api/loadPlans', {
-      user: state.id
+      user: user.id
     });
 
     updatePlans(results.data);
+
+    dispatch({type: 'spin-off'});
   }
 }
 

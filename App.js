@@ -1,19 +1,12 @@
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
 
-import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
-import LoginScreen from "./screens/LoginScreen";
-import RegisterScreen from "./screens/RegisterScreen";
-import { UserProvider } from "./stores/userStore";
-
-const Stack = createStackNavigator();
+import { AppContextProvider } from "./stores/appContextStore";
+import AppContent from "./AppContent";
 
 export default function App(props) {
 
@@ -25,6 +18,7 @@ export default function App(props) {
 
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
+
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHide();
@@ -58,25 +52,12 @@ export default function App(props) {
     return null;
   } else {
     return (
-      <UserProvider>
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default"/>}
-          <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-            <Stack.Navigator headerMode="none">
-              <Stack.Screen name="Login" component={LoginScreen}/>
-              <Stack.Screen name="Register" component={RegisterScreen}/>
-              <Stack.Screen name="Root" component={BottomTabNavigator}/>
-            </Stack.Navigator>
-          </NavigationContainer>
-        </View>
-      </UserProvider>
+      <AppContextProvider>
+        <AppContent
+          containerRef={containerRef}
+          initialNavigationState={initialNavigationState}
+        />
+      </AppContextProvider>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff'
-  },
-});

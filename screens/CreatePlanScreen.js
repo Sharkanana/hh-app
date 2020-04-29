@@ -6,7 +6,6 @@ import HH_Text from "../components/pieces/Text";
 
 const Stack = createStackNavigator();
 
-
 /**
  * Screen for creating plans
  */

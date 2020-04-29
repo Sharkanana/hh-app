@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { StyleSheet, View, FlatList, Image, Platform, Linking } from 'react-native';
+import {Ionicons} from "@expo/vector-icons";
+import axios from 'axios';
+
 import formStyles from "../styles/formStyles";
 import Colors from "../constants/Colors";
-import axios from 'axios';
 import images from "../assets/images/images";
 import Touchable from "./pieces/Touchable";
-import {Ionicons} from "@expo/vector-icons";
 import HH_Text from "./pieces/Text";
+import { appContextStore } from "../stores/appContextStore";
 
 /**
  * View for overview of a plan
@@ -20,6 +22,7 @@ export default function PlanOverview({ route }) {
   }, [route.params]);
 
   const [plan, updatePlan] = React.useState();
+  const { dispatch } = React.useContext(appContextStore);
 
   return (
     <>
@@ -116,6 +119,8 @@ export default function PlanOverview({ route }) {
 
   async function newSuggestion(date, meal) {
 
+    dispatch({type: 'spin-on'});
+
     const result = await axios.post('api/newSuggestion', {
       id: plan._id,
       date,
@@ -137,15 +142,21 @@ export default function PlanOverview({ route }) {
       ...plan,
       days: updatedDays
     });
+
+    dispatch({type: 'spin-off'});
   }
 
   async function loadPlan(planId) {
+
+    dispatch({type: 'spin-on'});
 
     const plan = await axios.post('api/loadPlan', {
       planId: planId
     });
 
     updatePlan(plan.data);
+
+    dispatch({type: 'spin-off'});
   }
 }
 
@@ -162,7 +173,7 @@ const styles = StyleSheet.create({
   },
   dateTab: {
     backgroundColor: 'white',
-    width: 140,
+    width: 145,
     padding: 3,
     borderColor: Colors.grayBorder,
     borderWidth: 1,

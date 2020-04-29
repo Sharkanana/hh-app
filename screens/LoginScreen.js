@@ -6,7 +6,7 @@ import axios from "axios";
 import formStyles from "../styles/formStyles";
 import Button from "react-native-button";
 import deviceStorage from "../services/deviceStorage";
-import {userStore} from "../stores/userStore";
+import {appContextStore} from "../stores/appContextStore";
 import HH_Text from "../components/pieces/Text";
 
 /**
@@ -33,7 +33,7 @@ export default function LoginScreen({navigation, route}) {
 
   /** Login Stuff **/
 
-  const { dispatch } = React.useContext(userStore);
+  const { dispatch } = React.useContext(appContextStore);
 
   React.useEffect(function() {
 
@@ -65,12 +65,12 @@ export default function LoginScreen({navigation, route}) {
           });
 
         // success? set the user state
-        dispatch({type: 'setuser', user: userObj.user});
+        dispatch({type: 'set-user', user: userObj.user});
 
         // now reset and navigate to root
         navigation.reset({
           index: 0,
-          routes: [ {name: 'Root' }]
+          routes: [{name: 'Root'}]
         });
 
       } catch(e) {
@@ -156,7 +156,7 @@ export default function LoginScreen({navigation, route}) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${data.payload.token}`;
 
             // update user context
-            dispatch({ type: 'setuser', user: data.payload.user });
+            dispatch({ type: 'set-user', user: data.payload.user });
 
             // now reset and navigate to root
             navigation.reset({

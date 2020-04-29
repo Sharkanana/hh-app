@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import Button from "react-native-button";
 
-import {userStore} from "../stores/userStore";
+import {appContextStore} from "../stores/appContextStore";
 import formStyles from "../styles/formStyles";
 import deviceStorage from "../services/deviceStorage";
 import HH_Text from "../components/pieces/Text";
@@ -12,7 +12,7 @@ import HH_Text from "../components/pieces/Text";
  */
 export default function ProfileScreen({navigation}) {
 
-  const { state, dispatch } = React.useContext(userStore);
+  const { state, dispatch } = React.useContext(appContextStore);
 
   return (
     <>
@@ -23,7 +23,7 @@ export default function ProfileScreen({navigation}) {
 
       <View style={formStyles.container}>
 
-        <HH_Text>Email: {state.email}</HH_Text>
+        <HH_Text>Email: {state.user.email}</HH_Text>
 
         <View style={formStyles.buttonDiv}>
           <Button style={formStyles.formBtn} containerStyle={formStyles.formBtnContainer} onPress={logout}>Logout</Button>
